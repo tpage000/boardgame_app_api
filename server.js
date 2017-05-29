@@ -20,7 +20,6 @@ const playersController = require('./controllers/playersController');
 const gamesController = require('./controllers/gamesController');
 const gameSessionsController = require('./controllers/gameSessionsController');
 const usersController = require('./controllers/usersController');
-const importsController = require('./controllers/importsController');
 
 // MIDDLEWARE
 app.use(morgan('dev'));
@@ -39,7 +38,6 @@ app.use(bodyParser.json());
 app.use('/players', playersController);
 app.use('/games', gamesController);
 app.use('/sessions', gameSessionsController);
-app.use('/imports', importsController);
 app.use('/users', usersController);
 
 app.get('/', (req, res) => {

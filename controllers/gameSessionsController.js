@@ -5,7 +5,7 @@ const Game = require('../models/game');
 const Player = require('../models/player');
 
 // Get all sessions
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
   let searchName;
   if (!req.session.loggedInUser) {
     searchName = "example"
@@ -14,44 +14,44 @@ router.get('/', function(req, res) {
   }
   console.log("Finding all sessions for: ", searchName);
 
-  Session.find({ userName: searchName }, null, {sort: '-date'}, function(err, sessions) {
+  Session.find({ userName: searchName }, null, {sort: '-date'}, (err, sessions) => {
     if (err) throw err;
     const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'scores.player', select: 'name avatar'}]
     const promise = Session.populate(sessions, opts)
-    promise.then(function(result) {
+    promise.then((result) => {
       res.json(result);
     });
   });
 });
 
 // Get game sessions list by GAME
-router.get('/byGame/:game_id', function(req, res) {
-  Session.find({ game: req.params.game_id}, null, {sort: '-date'}, function(err, sessions) {
+router.get('/byGame/:game_id', (req, res) => {
+  Session.find({ game: req.params.game_id}, null, {sort: '-date'}, (err, sessions) => {
     if (err) throw err;
     const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'scores.player', select: 'name avatar'}]
     const promise = Session.populate(sessions, opts)
-    promise.then(function(result) {
+    promise.then((result) => {
       res.json(result);
     })
   });
 });
 
 // Create new game session
-router.post('/', function(req, res) {
+router.post('/', (req, res) => {
   if (!req.session.loggedInUser.username) {
     res.send({status: 401, message: "Unauthorized"});
   } else {
     req.body.userName = req.session.loggedInUser.username;
-    Session.create(req.body, function(err, newSession) {
+    Session.create(req.body, (err, newSession) => {
       if (err) {
         res.json(err);
       } else {
         // update game plays field ( used mostly for populating game show page
         // with expansion plays data, easier if you don't have to also query the session
         // just to get plays )
-        Game.findById(req.body.game, function(err, foundGame) {
+        Game.findById(req.body.game, (err, foundGame) => {
           foundGame.plays++;
-          foundGame.save(function(gmerr, savedGame) {
+          foundGame.save((gmerr, savedGame) => {
             res.json(newSession);
           });
         });

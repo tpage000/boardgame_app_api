@@ -4,6 +4,7 @@ const mongoose   = require('mongoose');
 const bodyParser = require('body-parser');
 const session    = require('express-session');
 const morgan     = require('morgan');
+const cors       = require('cors');
 require('dotenv').config();
 
 // CONFIG
@@ -23,6 +24,7 @@ const importsController = require('./controllers/importsController');
 
 // MIDDLEWARE
 app.use(morgan('dev'));
+app.use(cors());
 
 app.use(session({
   secret: process.env.SECRET,

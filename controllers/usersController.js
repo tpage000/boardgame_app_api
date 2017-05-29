@@ -4,26 +4,26 @@ const router = express.Router();
 const User = require('../models/user');
 
 // index
-router.get('/', function(req, res) {
-  User.find(function(err, users) {
+router.get('/', (req, res) => {
+  User.find((err, users) => {
     if (err) throw err;
     res.json(users);
   });
 });
 
-router.get('/loggedIn', function(req, res) {
+router.get('/loggedIn', (req, res) => {
   if (!req.session.loggedInUser) {
     res.json({ status: 404, message: 'No user logged in' });
   } else {
-    User.findOne({ username: req.session.loggedInUser.username }, function(err, foundUser) {
+    User.findOne({ username: req.session.loggedInUser.username }, (err, foundUser) => {
       res.json({ status: 200, user: foundUser });
     });
   }
 });
 
 // create
-router.post('/', function(req, res) {
-  User.create(req.body, function(err, user) {
+router.post('/', (req, res) => {
+  User.create(req.body, (err, user) => {
     if (err) {
       res.json({ status: 422, error: err });
     } else {
@@ -34,8 +34,8 @@ router.post('/', function(req, res) {
 });
 
 // authenticate
-router.post('/login', function(req, res) {
-  User.findOne({ username: req.body.username }, function(err, foundUser) {
+router.post('/login', (req, res) => {
+  User.findOne({ username: req.body.username }, (err, foundUser) => {
     if (!foundUser) {
       console.log('no user found');
       res.json({ status: 401, message: 'Username not found' });
@@ -49,8 +49,8 @@ router.post('/login', function(req, res) {
   });
 });
 
-router.post('/logout', function(req, res) {
-  req.session.destroy(function(err) {
+router.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
     res.json({ status: 204 });
   });
 });

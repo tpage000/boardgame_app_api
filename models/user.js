@@ -1,12 +1,10 @@
-var mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-var userSchema = mongoose.Schema({
-
-	username: { type: String, unique: true, required: true },
-	avatar: { type: String, default: "https://ikhazy.com/wp-content/uploads/2015/12/Natural-Black-Ocean-Wave-Texture-100x100.jpg" },
-	password: { type: String, required: true }
-
+const userSchema = mongoose.Schema({
+  username: { type: String, unique: true, required: true },
+  avatar: { type: String, default: "https://ikhazy.com/wp-content/uploads/2015/12/Natural-Black-Ocean-Wave-Texture-100x100.jpg" },
+  password: { type: String, required: true }
 });
 
 // =================================================================
@@ -17,7 +15,7 @@ var userSchema = mongoose.Schema({
 // Used at signup / creating a user.
 userSchema.pre('save', function(next) {
   if (!this.isModified('password')) { return next(); }
-  var hashedPassword = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
+  const hashedPassword = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
   this.password = hashedPassword;
   next();
 });

@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
 
 const gameSchema = mongoose.Schema({
-  name: String,
+  name: { type: String, required: true },
   gameId: { type: Number, required: true },
+  description: String,
   isExpansion: { type: Boolean, default: false },
   expands: {},
   minPlayers: { type: Number, default: 1 },
@@ -18,6 +19,10 @@ const gameSchema = mongoose.Schema({
   inCollection: { type: Boolean, default: true },
   plays: { type: Number, default: 0 },
   expansions: Array,
+  bggRating: Number,
+  averageRating: Number,
+  rank: Number,
+  playerPollResults: Array,
   userName: { type: String, required: true }
 });
 

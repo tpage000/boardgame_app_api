@@ -4,19 +4,20 @@ const request = require('request');
 const Game = require('../models/game');
 const Session = require('../models/session');
 
+const exampleGames = require('../data/exampleGames');
+
 // index
 router.get('/', (req, res) => {
-  let searchName;
   if (!req.session.loggedInUser) {
-    searchName = "example"
+    res.json(exampleGames);
   } else {
-    searchName = req.session.loggedInUser.username;
+    console.log("Finding all games for: ", req.body.userName);
+    Game.find({ userName: req.session.loggedInUser.username})
+      .sort({date: 'descending'}).exec((err, games) => {
+      if (err) throw err;
+      res.json(games);
+    });
   }
-  console.log("Finding all games for: ", searchName);
-  Game.find({ userName: searchName }).sort({date: 'descending'}).exec((err, games) => {
-    if (err) throw err;
-    res.json(games);
-  });
 });
 
 // show

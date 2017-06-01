@@ -9,12 +9,11 @@ require('dotenv').config();
 
 // CONFIG
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 2080;
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/botch_app'
 
 // DB
 mongoose.connect(mongoURI, () => console.log('Mongo running at: ', mongoURI));
-
 
 // CONTROLLERS
 const playersController = require('./controllers/playersController');
@@ -36,6 +35,7 @@ app.use(session({
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Controllers as middleware
 app.use('/players', playersController);
 app.use('/games', gamesController);
 app.use('/sessions', gameSessionsController);
@@ -47,5 +47,6 @@ app.get('/', (req, res) => {
 
 // LISTENER
 app.listen(port, () => {
-  console.log('BOTCH APP is running on port ' + port);
+  console.log('Boardgame API is running on port: ' + port);
 });
+

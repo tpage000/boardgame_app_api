@@ -13,7 +13,8 @@ const port = process.env.PORT || 3000;
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/botch_app'
 
 // DB
-mongoose.connect(mongoURI);
+mongoose.connect(mongoURI, () => console.log('Mongo running at: ', mongoURI));
+
 
 // CONTROLLERS
 const playersController = require('./controllers/playersController');

@@ -27,9 +27,9 @@ app.use(cors());
 
 app.use(session({
   secret: process.env.SECRET,
-  resave: true,
-  saveUninitialized: false,
-  maxAge: 2592000000
+  resave: false,
+  saveUninitialized: true,
+  maxAge: 2592000000,
 }));
 
 app.use(bodyParser.urlencoded({ extended: true }));

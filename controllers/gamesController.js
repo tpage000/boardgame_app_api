@@ -8,10 +8,11 @@ const exampleGames = require('../data/exampleGames');
 
 // index
 router.get('/', (req, res) => {
+  console.log('request for user: ', req.session.loggedInUser);
   if (!req.session.loggedInUser) {
     res.json(exampleGames);
   } else {
-    console.log("Finding all games for: ", req.body.userName);
+    console.log("Finding all games for: ", req.session.loggedInUser);
     Game.find({ userName: req.session.loggedInUser.username})
       .sort({date: 'descending'}).exec((err, games) => {
       if (err) throw err;

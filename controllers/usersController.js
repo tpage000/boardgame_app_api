@@ -3,7 +3,7 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-// index
+// index of users (dev)
 router.get('/', (req, res) => {
   User.find((err, users) => {
     if (err) throw err;
@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
   });
 });
 
-// authenticate
+// authenticate user upon login, generate jwt
 router.post('/login', (req, res) => {
   console.log('request from client: ', req.body)
   User.findOne({ username: req.body.username }, (err, foundUser) => {
@@ -34,7 +34,7 @@ router.post('/login', (req, res) => {
   });
 });
 
-// create
+// create user upon signup, generate jwt
 router.post('/', (req, res) => {
   console.log('request from client: ', req.body);
   User.create(req.body, (err, createdUser) => {
@@ -53,21 +53,5 @@ router.post('/', (req, res) => {
     }
   });
 });
-
-router.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    res.json({ status: 204 });
-  });
-});
-
-// router.get('/loggedIn', (req, res) => {
-//   if (!req.session.loggedInUser) {
-//     res.json({ status: 404, message: 'No user logged in' });
-//   } else {
-//     User.findOne({ username: req.session.loggedInUser.username }, (err, foundUser) => {
-//       res.json({ status: 200, user: foundUser });
-//     });
-//   }
-// });
 
 module.exports = router;

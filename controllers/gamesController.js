@@ -1,22 +1,30 @@
 const express = require('express');
 const router = express.Router();
-const request = require('request');
 const Game = require('../models/game');
 const Session = require('../models/session');
-
+const jwt = require('jsonwebtoken');
 const exampleGames = require('../data/exampleGames');
 
 // index
 router.get('/', (req, res) => {
-  console.log('request for user: ', req.session.loggedInUser);
-  if (!req.session.loggedInUser) {
+  const token = req.headers['x-access-token']
+  if (!token) {
+    console.log('no auth token: sending example games data')
     res.json(exampleGames);
   } else {
-    console.log("Finding all games for: ", req.session.loggedInUser);
-    Game.find({ userName: req.session.loggedInUser.username})
-      .sort({date: 'descending'}).exec((err, games) => {
-      if (err) throw err;
-      res.json(games);
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+      if (err) {
+        return res.json({ message: 'failed to authenticate token' });
+      } else {
+        console.log('decoded token: ', decodedToken);
+
+         Game.find({ userName: decodedToken.username })
+          .sort({date: 'descending'}).exec((err, games) => {
+          if (err) throw err;
+          res.json(games);
+        })
+      }
     });
   }
 });

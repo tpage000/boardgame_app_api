@@ -7,26 +7,32 @@ const exampleGames = require('../data/exampleGames');
 
 // index
 router.get('/', (req, res) => {
-  const token = req.headers['x-access-token']
-  if (!token) {
-    console.log('no auth token: sending example games data')
-    res.json(exampleGames);
+  console.log('=================')
+  console.log('REQ.USER: ', req.user);
+  console.log('==================');
+  // const token = req.headers['x-access-token']
+  // if (!token) {
+  //   console.log('no auth token: sending example games data')
+  //   res.json(exampleGames);
+  // } else {
+
+  //   jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+  //     if (err) {
+  //       return res.json({ message: 'failed to authenticate token' });
+  //     } else {
+  //       console.log('decoded token: ', decodedToken);
+  if (!req.user) {
+    res.json(exampleGames)
   } else {
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-      if (err) {
-        return res.json({ message: 'failed to authenticate token' });
-      } else {
-        console.log('decoded token: ', decodedToken);
-
-         Game.find({ userName: decodedToken.username })
-          .sort({date: 'descending'}).exec((err, games) => {
-          if (err) throw err;
+    Game.find({ userName: req.user.username })
+      .sort({date: 'descending'}).exec((err, games) => {
+        if (err) throw err;
           res.json(games);
-        })
-      }
-    });
+    })
   }
+      // }
+    // });
+  // }
 });
 
 // show

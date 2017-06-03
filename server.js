@@ -27,9 +27,31 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Auth middleware
+const authUser = (req, res, next) => {
+  console.log('Running auth middleware...');
+  const token = req.headers['x-access-token']
+  if (!token) {
+    console.log('no auth token, no user set in req.user')
+    return next();
+  } else {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+      if (err) {
+        console.log('failed to authenticate, no user set in req.user')
+        return next();
+      } else {
+        console.log('decoded token: ', decodedToken);
+        req.user = decodedToken;
+        next();
+      }
+    });
+  }
+}
+
+
 // Controllers as middleware
 app.use('/players', playersController);
-app.use('/games', gamesController);
+app.use('/games', authUser, gamesController);
 app.use('/sessions', gameSessionsController);
 app.use('/users', usersController);
 

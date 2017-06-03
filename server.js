@@ -48,13 +48,13 @@ const authUser = (req, res, next) => {
   }
 }
 
-
-// Controllers as middleware
-app.use('/players', playersController);
-app.use('/games', authUser, gamesController);
-app.use('/sessions', gameSessionsController);
+// Controllers as middleware -- protected routes use authUser
 app.use('/users', usersController);
+app.use('/games', authUser, gamesController);
+app.use('/sessions', authUser, gameSessionsController);
+app.use('/players', authUser, playersController);
 
+// Root API route
 app.get('/', (req, res) => {
   res.send('Board game app API');
 });

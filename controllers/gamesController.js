@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const Game = require('../models/game');
-const Session = require('../models/session');
-const jwt = require('jsonwebtoken');
 const exampleGames = require('../data/exampleGames');
 
 // index of user's games -- req.user set by auth middleware

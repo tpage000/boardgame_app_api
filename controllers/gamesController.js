@@ -5,37 +5,21 @@ const Session = require('../models/session');
 const jwt = require('jsonwebtoken');
 const exampleGames = require('../data/exampleGames');
 
-// index
+// index of user's games -- req.user set by auth middleware
+// if no req.user, send examples instead
 router.get('/', (req, res) => {
-  console.log('=================')
-  console.log('REQ.USER: ', req.user);
-  console.log('==================');
-  // const token = req.headers['x-access-token']
-  // if (!token) {
-  //   console.log('no auth token: sending example games data')
-  //   res.json(exampleGames);
-  // } else {
-
-  //   jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-  //     if (err) {
-  //       return res.json({ message: 'failed to authenticate token' });
-  //     } else {
-  //       console.log('decoded token: ', decodedToken);
   if (!req.user) {
     res.json(exampleGames)
   } else {
     Game.find({ userName: req.user.username })
       .sort({date: 'descending'}).exec((err, games) => {
         if (err) throw err;
-          res.json(games);
-    })
+        res.json(games);
+      })
   }
-      // }
-    // });
-  // }
 });
 
-// show
+// show a game -- not yet secure per user
 router.get('/:id', (req, res) => {
   console.log('id param: ', req.params.id);
   Game.findById(req.params.id, (err, foundGame) => {
@@ -56,23 +40,23 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// create
+// create a new game belonging to the user -- req.user comes from auth
+// middleware
 router.post('/', (req, res) => {
-  if (!req.session.loggedInUser.username) {
-    res.send({status: 401, message: "Unauthorized"});
+  if (!req.user) {
+    res.status(401).send({ message: "Unauthorized" });
   } else {
-    req.body.userName = req.session.loggedInUser.username;
+    req.body.username = req.user.username;
     Game.create(req.body, (err, newGame) => {
       if (err) {
         console.log('Create game Error: ', err);
-        res.json(err);
+        res.status(400).send({ message: 'error creating game' });
       } else {
-        console.log('game successfully added to database for user: ', req.session.loggedInUser.userName );
-        res.json(newGame);
+        console.log('game successfully added to database for user: ', req.user.username);
+        res.json({ status: 201, game: newGame });
       }
     });
   }
 });
-
 
 module.exports = router;

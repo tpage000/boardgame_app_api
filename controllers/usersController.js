@@ -39,17 +39,17 @@ router.post('/', (req, res) => {
   console.log('request from client: ', req.body);
   User.create(req.body, (err, createdUser) => {
     if (err) {
-      console.log('error saving user: ');
+      console.log('error saving user: ', err);
       res.status(400).send({ err: err });
     } else {
       const token = jwt.sign({
-          id: foundUser.id, 
-          username: foundUser.username
+          id: createdUser.id, 
+          username: createdUser.username
         },
         process.env.JWT_SECRET,
         { expiresIn: '7d' }
       )
-      res.json({ status: 201, user: createdUser, token: token })
+      res.json({ status: 201, username: createdUser.username, token: token })
     }
   });
 });

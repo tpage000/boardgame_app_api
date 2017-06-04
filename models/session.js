@@ -9,7 +9,7 @@ const sessionSchema = mongoose.Schema({
           ref: 'Game',
           required: true
         },
-  scores: [
+  results: [
             {
               player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true },
               score: { type: Number, required: true },

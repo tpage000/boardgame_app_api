@@ -43,8 +43,8 @@ Add stuff to your account
 
 * `/games` add a game (lotsa body data to provide...)
 * JSON boardgame data can found at `'https://bgg-json.azurewebsites.net/thing/'` + BoardGameGeek game id. Use it to populate the new game request. A frontend client can query the JSON api then just swoop that stuff into the request.
-* `/sessions` add a session (TBA)
-* `/players` add a player (TBA)
+* `/sessions` add a session. Body data: `date`, `game` with the id of the game in your collection, Optional `comments`. `results` is an array of objects, each object containing `player` with the id of the player and `score`, a number.  
+* `/players` add a player. Body data: ` name`, `avatar` an img url (img ideally 100x100px), `player_since`, a date when the player joined.
 
 <br>
 

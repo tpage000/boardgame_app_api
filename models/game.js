@@ -23,7 +23,7 @@ const gameSchema = mongoose.Schema({
   averageRating: Number,
   rank: Number,
   playerPollResults: Array,
-  userName: { type: String, required: true }
+  username: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Game', gameSchema);

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const gameSchema = require('./game').schema;
 
+// a game Session is dependent on having a game and at least one player
+// a game Session will be populated with the game and the player(s)
 const sessionSchema = mongoose.Schema({
   date: { type: Date, required: true },
   game: {
@@ -15,7 +16,8 @@ const sessionSchema = mongoose.Schema({
               winner: { type: Boolean, default: false }
             }
           ],
-  userName: { type: String, required: true }
+  username: { type: String, required: true },
+  comments: String
 });
 
 module.exports = mongoose.model('Session', sessionSchema);

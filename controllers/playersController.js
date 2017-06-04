@@ -2,35 +2,30 @@ const express = require('express');
 const router = express.Router();
 const Player = require('../models/player');
 
-// index
+// index of players for a user -- req.user comes in from auth middleware
 router.get('/', (req, res) => {
-  let searchName;
-  if (!req.session.loggedInUser) {
-    searchName = "example"
+  if (!req.user) {
+    res.json(examplePlayers);
   } else {
-    searchName = req.session.loggedInUser.username;
+    Player.find({ userName: req.user.username }, (err, players) => {
+      if (err) throw err;
+      res.json(players);
+    });
   }
-
-  // const searchName = req.session.loggedInUser.username || "example";
-  console.log("Finding all players for: ", searchName);
-  Player.find({ userName: searchName }, (err, players) => {
-    if (err) throw err;
-    res.json(players);
-  });
 });
 
-// create
+// add a new player for a user
 router.post('/', (req, res) => {
-  if (!req.session.loggedInUser.username) {
-    res.send({status: 401, message: "Unauthorized"});
+  if (!req.user) {
+    res.status(401).send({ message: 'Unathorized' });
   } else {
-    req.body.userName = req.session.loggedInUser.username;
-    console.log('Incoming data: ', req.body);
-    Player.create(req.body, (err, player) => {
+    req.body.username = req.user.username;
+    Player.create(req.body, (err, createdPlayer) => {
       if (err) {
-        res.json(err);
+        console.log('Error creating player: ', err);
+        res.status(400).send({ message: 'Error creating player' });
       } else {
-        res.json(player);
+        res.json(createdPlayer);
       }
     });
   }

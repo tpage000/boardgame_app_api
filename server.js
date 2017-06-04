@@ -9,7 +9,7 @@ const cors       = require('cors');
 // CONFIG
 const app = express();
 const port = process.env.PORT || 2080;
-const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/botch_app'
+const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/boardgame_app_api'
 require('dotenv').config();
 
 // DB

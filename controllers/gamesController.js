@@ -9,6 +9,7 @@ router.get('/', (req, res) => {
   if (!req.user) {
     res.json(exampleGames)
   } else {
+    console.log('getting games for: ', req.user.username);
     Game.find({ username: req.user.username }, (err, foundGames) => {
       if (err) {
         console.log('error getting games: ', err);

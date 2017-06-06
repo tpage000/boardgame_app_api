@@ -44,15 +44,19 @@ router.post('/', (req, res) => {
         console.log('Error creating session: ', err);
         res.status(400).send({ message: 'error creating session' });
       } else {
-        // update game plays field ( used mostly for populating game show page
-        // with expansion plays data, easier if you don't have to also query the session
-        // just to get plays )
-        Game.findById(req.body.game, (findGameErr, foundGame) => {
-          foundGame.plays++;
-          foundGame.save((saveGameErr, savedGame) => {
-            console.log('plays incremented for game: ', foundGame.name);
-            res.json(newSession);
+        const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'scores.player', select: 'name avatar'}]
+        const promise = Session.populate(newSession, opts)
+        promise.then((gameSessions) => {
+
+          // update game plays field ( used mostly for populating game show page
+          Game.findById(req.body.game, (findGameErr, foundGame) => {
+            foundGame.plays++;
+            foundGame.save((saveGameErr, savedGame) => {
+              console.log('plays incremented for game: ', foundGame.name);
+              res.json(gameSessions);
+            });
           });
+
         });
       };
     });

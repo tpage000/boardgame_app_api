@@ -5,6 +5,6 @@ const playerSchema = mongoose.Schema({
   avatar: { type: String, required: true },
   player_since: { type: String, required: true },
   username: { type: String, required: true }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Player', playerSchema);

@@ -15,7 +15,7 @@ const gameSchema = mongoose.Schema({
   artists: Array,
   publishers: Array,
   yearPublished: Number,
-  acquired: { type: Date },
+  acquired: { type: Date, default: Date.now },
   inCollection: { type: Boolean, default: true },
   plays: { type: Number, default: 0 },
   expansions: Array,
@@ -24,6 +24,6 @@ const gameSchema = mongoose.Schema({
   rank: Number,
   playerPollResults: Array,
   username: { type: String, required: true }
-});
+}, { timestamps: true });
 
 module.exports = mongoose.model('Game', gameSchema);

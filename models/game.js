@@ -15,7 +15,7 @@ const gameSchema = mongoose.Schema({
   artists: Array,
   publishers: Array,
   yearPublished: Number,
-  acquired: { type: Date, required: true },
+  acquired: { type: Date },
   inCollection: { type: Boolean, default: true },
   plays: { type: Number, default: 0 },
   expansions: Array,

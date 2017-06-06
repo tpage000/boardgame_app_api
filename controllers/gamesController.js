@@ -9,11 +9,15 @@ router.get('/', (req, res) => {
   if (!req.user) {
     res.json(exampleGames)
   } else {
-    Game.find({ userName: req.user.username })
-      .sort({date: 'descending'}).exec((err, games) => {
-        if (err) throw err;
-        res.json(games);
-      })
+    Game.find({ username: req.user.username }, (err, foundGames) => {
+      if (err) {
+        console.log('error getting games: ', err);
+        res.status(400).send({ message: 'err getting games'});
+      } else {
+        const reversedGames = foundGames.slice().reverse();
+        res.json(reversedGames);
+      }
+    })
   }
 });
 

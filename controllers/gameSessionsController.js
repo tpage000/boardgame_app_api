@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
   }
 });
 
-// Get game sessions for a game -- not secure per user yet
+// Get game sessions for a game
 router.get('/:game_id', (req, res) => {
   Session.find({ game: req.params.game_id}, null, {sort: '-date'}, (err, sessions) => {
     if (err) throw err;

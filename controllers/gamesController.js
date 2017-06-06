@@ -21,26 +21,44 @@ router.get('/', (req, res) => {
   }
 });
 
-// show a game -- not yet secure per user
+// show a game and its related sessions
 router.get('/:id', (req, res) => {
   console.log('id param: ', req.params.id);
   Game.findById(req.params.id, (err, foundGame) => {
-    if (err) throw err;
-
-    if (foundGame.isExpansion) {
-      Game.find({ 'gameId' : foundGame.expands[0].gameId }, 'name id plays', (experr, parentGames) => {
-        foundGame.expansions = parentGames;
-        res.json(foundGame);
-      });
-    } else {
-      Game.find({ 'expands.gameId': foundGame.gameId}, 'name id plays', (err, expansions) => {
-        console.log('expansions: ', expansions);
-          foundGame.expansions = expansions;
-          res.json(foundGame);
-      });
+    if (err) {
+      console.log('error getting game: ', err);
+      res.status(400).send({ message: 'error getting game' })
     }
+    Session.find({ game: req.params.game_id}, null, {sort: '-date'}, (err, sessions) => {
+      if (err) throw err;
+      const opts = [{ path: 'results.player', select: 'name avatar'}]
+      const promise = Session.populate(sessions, opts)
+      promise.then((gameSessions) => {
+        res.json({ game: foundGame, sessions: gameSessions });
+      });
+    });
   });
 });
+    // Sending related expansion and parent games:
+    // THIS DOES NOT WORK because it finds expansion and parent games by
+    // BGG id, not by the db id of the games. Therefore expansion and parent
+    // games could belong to a different user. Find a fix when req.user
+    // is implemented.
+    //
+    // if (foundGame.isExpansion) {
+    //   Game.find({ 'gameId' : foundGame.expands[0].gameId }, 
+    //     'name id plays', (experrames) => {
+    //     foundGame.expansions = parentGames;
+    //     res.json(foundGame);
+    //   });
+    // } else {
+    //   Game.find({ 'expands.gameId': foundGame.gameId}, 
+    //     'name id plays', (err, expansions) => {
+    //     console.log('expansions: ', expansions);
+    //       foundGame.expansions = expansions;
+    //       res.json(foundGame);
+    //   });
+    // }
 
 // create a new game belonging to the user -- req.user comes from auth
 // middleware

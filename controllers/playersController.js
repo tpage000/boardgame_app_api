@@ -7,7 +7,7 @@ router.get('/', (req, res) => {
   if (!req.user) {
     res.json(examplePlayers);
   } else {
-    Player.find({ userName: req.user.username }, (err, players) => {
+    Player.find({ username: req.user.username }, (err, players) => {
       if (err) throw err;
       res.json(players);
     });

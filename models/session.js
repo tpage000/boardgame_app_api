@@ -20,4 +20,15 @@ const sessionSchema = mongoose.Schema({
   comments: String
 }, { timestamps: true });
 
+// validation for the presence of a gameresults array
+sessionSchema.path('gameresults').validate(gameresults => {
+  if (!gameresults) {
+    return false;
+  } else if (gameresults.length === 0) {
+    return false;
+  } else {
+    return true;
+  }
+}, 'Session needs to have at least one gameresult');
+
 module.exports = mongoose.model('Session', sessionSchema);

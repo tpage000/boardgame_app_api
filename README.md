@@ -49,8 +49,8 @@ Add stuff to your account
   * **`game`** with the id of the game in your collection. _required_
   * **`comments`** _optional_
   * **`gameresults`** is an array of objects. _required_. Each object contains:
-   * **`player`** with the id of the player. _required_ 
-   * **`score`**, a number. _required_
+    * **`player`** with the id of the player. _required_ 
+    * **`score`**, a number. _required_
 * **`/players`** add a player. Body data: 
   * **`name`** _required_
   * **`avatar`** an img url (img ideally 100x100px). _optional_. A default avatar is provided

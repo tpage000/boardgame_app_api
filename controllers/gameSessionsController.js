@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
   } else {
     Session.find({ username: req.user.username }, null, {sort: '-date'}, (err, sessions) => {
       if (err) throw err;
-      const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'scores.player', select: 'name avatar'}]
+      const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player', select: 'name avatar'}]
       const promise = Session.populate(sessions, opts)
       promise.then((allSessions) => {
         res.json(allSessions);
@@ -25,7 +25,7 @@ router.get('/', (req, res) => {
 router.get('/:game_id', (req, res) => {
   Session.find({ game: req.params.game_id}, null, {sort: '-date'}, (err, sessions) => {
     if (err) throw err;
-    const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'scores.player', select: 'name avatar'}]
+    const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player', select: 'name avatar'}]
     const promise = Session.populate(sessions, opts)
     promise.then((gameSessions) => {
       res.json(gameSessions);

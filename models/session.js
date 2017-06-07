@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 // a game Session is dependent on having a game and at least one player
 // a game Session will be populated with the game and the player(s)
 const sessionSchema = mongoose.Schema({
-  date: { type: Date, default: Date.now },
+  date: { type: Date, required: true },
   game: {
           type: mongoose.Schema.Types.ObjectId,
           ref: 'Game',

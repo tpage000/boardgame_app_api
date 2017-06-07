@@ -12,6 +12,7 @@ const sessionSchema = mongoose.Schema({
   gameresults: [
             {
               player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true },
+              playername: { type: String, required: true },
               score: { type: Number, required: true },
               winner: { type: Boolean, default: false }
             }

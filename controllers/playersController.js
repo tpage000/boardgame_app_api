@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
     Player.create(req.body, (err, createdPlayer) => {
       if (err) {
         console.log('Error creating player: ', err);
-        res.status(400).send({ message: 'Error creating player' });
+        res.status(400).send({ message: err.message });
       } else {
         res.json(createdPlayer);
       }

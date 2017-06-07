@@ -44,7 +44,7 @@ router.post('/', (req, res) => {
         console.log('Error creating session: ', err);
         res.status(400).send({ message: 'error creating session' });
       } else {
-        const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'scores.player', select: 'name avatar'}]
+        const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player', select: 'name avatar'}]
         const promise = Session.populate(newSession, opts)
         promise.then((gameSessions) => {
 

@@ -1,8 +1,8 @@
-const express = require('express');
-const router = express.Router();
-const Session = require('../models/session');
-const Game = require('../models/game');
-const Player = require('../models/player');
+const express         = require('express');
+const router          = express.Router();
+const Session         = require('../models/session');
+const Game            = require('../models/game');
+const Player          = require('../models/player');
 const exampleSessions = require('../data/exampleSessions');
 
 // Get all users' sessions -- req.user comes in through auth middleware
@@ -42,7 +42,7 @@ router.post('/', (req, res) => {
     Session.create(req.body, (err, newSession) => {
       if (err) {
         console.log('Error creating session: ', err);
-        res.status(400).send({ message: 'error creating session' });
+        res.status(400).send({ message: err.message });
       } else {
         const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player', select: 'name avatar'}]
         const promise = Session.populate(newSession, opts)

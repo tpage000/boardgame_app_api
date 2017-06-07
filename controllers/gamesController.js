@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
     Game.find({ username: req.user.username }, (err, foundGames) => {
       if (err) {
         console.log('error getting games: ', err);
-        res.status(400).send({ message: 'err getting games'});
+        res.status(400).send({ message: err.message });
       } else {
         const reversedGames = foundGames.slice().reverse();
         res.json(reversedGames);
@@ -28,7 +28,7 @@ router.get('/:id', (req, res) => {
   Game.findById(req.params.id, (err, foundGame) => {
     if (err) {
       console.log('error getting game: ', err);
-      res.status(400).send({ message: 'error getting game' })
+      res.status(400).send({ message: err.message });
     }
     Session.find({ game: req.params.game_id}, null, {sort: '-date'}, (err, sessions) => {
       if (err) throw err;
@@ -71,7 +71,7 @@ router.post('/', (req, res) => {
     Game.create(req.body, (err, newGame) => {
       if (err) {
         console.log('Create game Error: ', err);
-        res.status(400).send({ message: 'error creating game' });
+        res.status(400).send({ message: err.message });
       } else {
         console.log('game successfully added to database for user: ', req.user.username);
         res.json({ status: 201, game: newGame });

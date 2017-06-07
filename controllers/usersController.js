@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
   User.findOne({ username: req.body.username }, (err, foundUser) => {
     if (!foundUser) {
       console.log('Authentication error: no user found');
-      res.status(401).send({ err: 'Username not found' });
+      res.status(401).send({ message: err.message });
     } else if (foundUser.authenticate(req.body.password)) {
       const token = jwt.sign({
           id: foundUser.id, 
@@ -29,7 +29,7 @@ router.post('/login', (req, res) => {
       res.json({ status: 200, username: foundUser.username, token: token });
     } else {
       console.log('Authentication error: password does not match');
-      res.json({ status: 401, err: 'Wrong password' });
+      res.status(401).send({ message: err.message })
     }
   });
 });
@@ -40,7 +40,7 @@ router.post('/', (req, res) => {
   User.create(req.body, (err, createdUser) => {
     if (err) {
       console.log('error saving user: ', err);
-      res.status(400).send({ err: err });
+      res.status(400).send({message: err.message });
     } else {
       const token = jwt.sign({
           id: createdUser.id, 

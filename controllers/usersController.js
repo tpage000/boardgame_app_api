@@ -14,24 +14,28 @@ router.get('/', (req, res) => {
 // authenticate user upon login, generate jwt
 router.post('/login', (req, res) => {
   console.log('request from client: ', req.body)
-  User.findOne({ username: req.body.username }, (err, foundUser) => {
-    if (!foundUser) {
-      console.log('Authentication error: no user found');
-      res.status(401).send({ message: err.message });
-    } else if (foundUser.authenticate(req.body.password)) {
-      const token = jwt.sign({
-          id: foundUser.id, 
-          username: foundUser.username
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: '7d' }
-      )
-      res.json({ status: 200, username: foundUser.username, token: token });
-    } else {
-      console.log('Authentication error: password does not match');
-      res.status(401).send({ message: err.message })
-    }
-  });
+  if (!req.body.password) {
+    res.status(401).send({ message: 'No password provided' })
+  } else {
+    User.findOne({ username: req.body.username }, (err, foundUser) => {
+      if (!foundUser) {
+        console.log('Authentication error: no user found');
+        res.status(401).send({ message: 'No user found by that name' });
+      } else if (foundUser.authenticate(req.body.password)) {
+        const token = jwt.sign({
+            id: foundUser.id, 
+            username: foundUser.username
+          },
+          process.env.JWT_SECRET,
+          { expiresIn: '7d' }
+        )
+        res.json({ status: 200, username: foundUser.username, token: token });
+      } else {
+        console.log('Authentication error: password does not match');
+        res.status(401).send({ message: 'password does not match' })
+      }
+    });
+  }
 });
 
 // create user upon signup, generate jwt

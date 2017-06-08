@@ -8,6 +8,7 @@ const exampleSessions = require('../data/exampleSessions');
 // Get all users' sessions -- req.user comes in through auth middleware
 router.get('/', (req, res) => {
   if (!req.user) {
+    console.log('sending example sessions ..');
     res.json(exampleSessions);
   } else {
     Session.find({ username: req.user.username }, null, {sort: '-date'}, (err, sessions) => {

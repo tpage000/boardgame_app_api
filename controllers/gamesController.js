@@ -7,6 +7,7 @@ const exampleGames = require('../data/exampleGames');
 // if no req.user, send examples instead
 router.get('/', (req, res) => {
   if (!req.user) {
+    console.log('sending example games ..');
     res.json(exampleGames)
   } else {
     console.log('getting games for: ', req.user.username);

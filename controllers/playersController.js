@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 // add a new player for a user
 router.post('/', (req, res) => {
   if (!req.user) {
-    res.status(401).send({ message: 'Unathorized' });
+    res.status(401).send({ message: 'Unauthorized' });
   } else {
     req.body.username = req.user.username;
     Player.create(req.body, (err, createdPlayer) => {

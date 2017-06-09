@@ -41,7 +41,7 @@ router.get('/:game_id', (req, res) => {
 // Create new game session
 router.post('/', (req, res) => {
   if (!req.user) {
-    res.send({status: 401, message: "Unauthorized"});
+    res.status(401).send({ message: "Unauthorized" });
   } else {
     req.body.username = req.user.username;
     Session.create(req.body, (err, newSession) => {

@@ -9,7 +9,7 @@
   "author": "thom page",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^1.0.2",
+    "bcrypt": "^1.0.3",
     "body-parser": "^1.15.2",
     "cors": "^2.8.3",
     "dotenv": "^4.0.0",

@@ -6,7 +6,7 @@
 
 **[Angular client on Heroku using older version of API](https://botch-app.herokuapp.com/)**
 
-<br>
+---
 
 FEATURES
 
@@ -15,9 +15,12 @@ FEATURES
 * Manage players
 * See dates when a boardgame was played, and track the number of plays
 
-<br>
+---
 
-To run, add a `.env` file with `JWT_SECRET=yoursecret`
+To use locally:
+
+* Add a `.env` file with `JWT_SECRET=yoursecret`
+* Mongo server running
 
 ---
 
@@ -64,9 +67,15 @@ Add stuff to your account
   * **`avatar`** an img url (img ideally 100x100px). _optional_. A default avatar is provided
   * **`date`**, a date when the player joined. 
 
-<br>
+---
 
+To do:
+
+Refactor queries to `async / await`
+
+---
 
 SERVER: Node & Express
+
 DB: Mongo & Mongoose
 

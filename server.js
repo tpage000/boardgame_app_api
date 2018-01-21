@@ -13,7 +13,9 @@ const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/boardgame_app_a
 require('dotenv').config();
 
 // DB
-mongoose.connect(mongoURI, () => console.log('Mongo running at: ', mongoURI));
+mongoose.connect(mongoURI, { useMongoClient: true });
+mongoose.connection.on('open', () => console.log('Mongo at: ', mongoURI));
+mongoose.connection.on('error', (err) => console.log('DB err: ', err.message));
 
 // CONTROLLERS
 const playersController = require('./controllers/playersController');

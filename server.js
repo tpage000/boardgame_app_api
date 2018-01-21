@@ -1,7 +1,6 @@
 // DEPENDENCIES
 const express    = require('express');
 const mongoose   = require('mongoose');
-const bodyParser = require('body-parser');
 const jwt        = require('jsonwebtoken');
 const morgan     = require('morgan');
 const cors       = require('cors');
@@ -26,8 +25,8 @@ const usersController = require('./controllers/usersController');
 // MIDDLEWARE
 app.use(morgan('dev'));
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Auth middleware
 const authUser = (req, res, next) => {

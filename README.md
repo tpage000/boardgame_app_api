@@ -14,8 +14,10 @@ FEATURES
 * See dates when a boardgame was played, and track the number of plays
 
 <br>
+
 To run, add a `.env` file with `JWT_SECRET=yoursecret`
-<br>
+
+---
 
 **ENDPOINTS**
 

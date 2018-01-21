@@ -57,7 +57,7 @@ app.use('/players', authUser, playersController);
 
 // Root API route
 app.get('/', (req, res) => {
-  res.send('Board game app API');
+  res.send({ message: 'Board game app API' });
 });
 
 // LISTENER

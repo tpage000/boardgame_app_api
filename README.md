@@ -1,8 +1,9 @@
 # Boardgame tracker app API
 
-## [Example site with Angular client](https://botch-app.herokuapp.com/)
-
 **[React client](https://github.com/singular000/boardgame_app_react_client)**
+
+**[Hosted Angular client using older version of API](https://botch-app.herokuapp.com/)**
+
 <br>
 
 FEATURES

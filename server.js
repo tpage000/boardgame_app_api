@@ -17,7 +17,7 @@ mongoose.connection.on('open', () => console.log('Mongo at: ', mongoURI));
 mongoose.connection.on('error', (err) => console.log('DB err: ', err.message));
 
 // CONTROLLERS
-const playersController = require('./controllers/playersController');
+const guestsController = require('./controllers/guestsController');
 const gamesController = require('./controllers/gamesController');
 const gameSessionsController = require('./controllers/gameSessionsController');
 const usersController = require('./controllers/usersController');
@@ -53,7 +53,7 @@ const authUser = (req, res, next) => {
 app.use('/users', usersController);
 app.use('/games', authUser, gamesController);
 app.use('/sessions', authUser, gameSessionsController);
-app.use('/players', authUser, playersController);
+app.use('/guests', authUser, guestsController);
 
 // Root API route
 app.get('/', (req, res) => {

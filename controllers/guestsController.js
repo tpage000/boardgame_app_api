@@ -1,28 +1,29 @@
 const express        = require('express');
 const router         = express.Router();
-const Player         = require('../models/player');
+const Guest          = require('../models/guest');
 const examplePlayers = require('../data/examplePlayers');
 
-// index of players for a user -- req.user comes in from auth middleware
+// index of guests for a user -- req.user comes in from auth middleware
 router.get('/', (req, res) => {
   if (!req.user) {
     console.log('sending example players ..');
     res.json(examplePlayers);
   } else {
-    Player.find({ username: req.user.username }, (err, players) => {
+    // Guest.find({ username: req.user.username }, (err, players) => {
+    Guest.find({ host_user_id: req.user.id }, (err, players) => {
       if (err) throw err;
       res.json(players);
     });
   }
 });
 
-// add a new player for a user
+// add a new guest for a user
 router.post('/', (req, res) => {
   if (!req.user) {
     res.status(401).send({ message: 'Unauthorized' });
   } else {
-    req.body.username = req.user.username;
-    Player.create(req.body, (err, createdPlayer) => {
+    req.body.host_user_id = req.user.id;
+    Guest.create(req.body, (err, createdPlayer) => {
       if (err) {
         console.log('Error creating player: ', err);
         res.status(400).send({ message: err.message });

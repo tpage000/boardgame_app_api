@@ -10,25 +10,27 @@ const sessionSchema = mongoose.Schema({
           required: true
         },
   gameresults: [
-            {
-              player: { type: mongoose.Schema.Types.ObjectId, ref: 'Player', required: true },
-              score: { type: Number, required: true },
-              winner: { type: Boolean, default: false }
+        {
+          player: { 
+            kind: String, 
+            info: { 
+              type: mongoose.Schema.Types.ObjectId, 
+              refPath: 'gameresults.player.kind', // either User or Guest
+              required: true 
             }
-          ],
-  username: { type: String, required: true },
+          },
+          score: { type: Number, required: true },
+          winner: { type: Boolean, default: false }
+        }
+  ],
+  user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   comments: String
 }, { timestamps: true });
 
 // validation for the presence of a gameresults array
 sessionSchema.path('gameresults').validate(gameresults => {
-  if (!gameresults) {
-    return false;
-  } else if (gameresults.length === 0) {
-    return false;
-  } else {
-    return true;
-  }
+  if (!gameresults || gameresults.length === 0) return false;
+  return true;
 }, 'Session needs to have at least one gameresult');
 
 module.exports = mongoose.model('Session', sessionSchema);

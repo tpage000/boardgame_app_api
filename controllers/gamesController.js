@@ -3,6 +3,8 @@ const router = express.Router();
 const Game = require('../models/game');
 const exampleGames = require('../data/exampleGames');
 const rp = require('request-promise');
+const parseXML = require('xml2js').parseString;
+
 
 // index of user's games -- req.user set by auth middleware
 // if no req.user, send examples instead
@@ -21,6 +23,22 @@ router.get('/', (req, res) => {
         res.json(reversedGames);
       }
     })
+  }
+});
+
+router.get('/search', async (req, res) => {
+  let title = req.query.title;
+  let options = {
+    uri: `https://boardgamegeek.com/xmlapi2/search?query=${title}`
+  }
+  try {
+    let searchResult = await rp(options);
+    parseXML(searchResult, (err, json) => {
+      res.status(200).json(json);
+    })
+  } catch (err) {
+    console.log(err);
+    res.send(err);
   }
 });
 
@@ -57,6 +75,7 @@ router.get('/query/:id', async (req, res) => {
     res.status(400).send({ message: err.message })
   }
 })
+
 
 // create a new game belonging to the user -- req.user comes from auth
 // middleware

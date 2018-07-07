@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
   } else {
     Session.find({ user_id: req.user.id }, null, {sort: '-date'}, (err, sessions) => {
       if (err) throw err;
-      const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'name avatar'}]
+      const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'username avatar'}]
       const promise = Session.populate(sessions, opts)
       promise.then((allSessions) => {
         res.json(allSessions);
@@ -29,7 +29,7 @@ router.get('/:game_id', (req, res) => {
   } else {
     Session.find({ game: req.params.game_id }, null, {sort: '-date'}, (err, sessions) => {
       if (err) throw err;
-      const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'name avatar'}]
+      const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'username avatar'}]
       const promise = Session.populate(sessions, opts)
       promise.then((gameSessions) => {
         res.json(gameSessions);
@@ -52,15 +52,15 @@ router.post('/', (req, res) => {
         const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'username avatar'}]
         const promise = Session.populate(newSession, opts)
         promise.then((gameSessions) => {
-          res.json(gameSessions);
+          // res.json(gameSessions);
           // update game plays field ( used mostly for populating game show page
-          // Game.findById(req.body.game, (findGameErr, foundGame) => {
-          //   foundGame.plays++;
-          //   foundGame.save((saveGameErr, savedGame) => {
-          //     console.log('plays incremented for game: ', foundGame.name);
-          //     res.json(gameSessions);
-          //   });
-          // });
+          Game.findById(req.body.game, (findGameErr, foundGame) => {
+            foundGame.plays++;
+            foundGame.save((saveGameErr, savedGame) => {
+              console.log('plays incremented for game: ', foundGame.name);
+              res.json(gameSessions);
+            });
+          });
 
         });
       };

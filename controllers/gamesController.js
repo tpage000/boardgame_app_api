@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
     res.json(exampleGames)
   } else {
     console.log('getting games for: ', req.user.username);
-    Game.find({ username: req.user.username }, (err, foundGames) => {
+    Game.find({ user_id: req.user.id }, (err, foundGames) => {
       if (err) {
         console.log('error getting games: ', err);
         res.status(400).send({ message: err.message });
@@ -31,9 +31,9 @@ router.get('/:id', (req, res) => {
       console.log('error getting game: ', err);
       res.status(400).send({ message: err.message });
     }
-    Session.find({ game: req.params.game_id}, null, {sort: '-date'}, (err, sessions) => {
+    Session.find({ game: req.params.id}, null, {sort: '-date'}, (err, sessions) => {
       if (err) throw err;
-      const opts = [{ path: 'gameresults.player', select: 'name avatar'}]
+      const opts = [{ path: 'gameresults.player.info', select: 'username avatar'}]
       const promise = Session.populate(sessions, opts)
       promise.then((gameSessions) => {
         res.json({ game: foundGame, sessions: gameSessions });
@@ -68,7 +68,7 @@ router.post('/', (req, res) => {
   if (!req.user) {
     res.status(401).send({ message: "Unauthorized" });
   } else {
-    req.body.username = req.user.username;
+    req.body.user_id = req.user.id;
     Game.create(req.body, (err, newGame) => {
       if (err) {
         console.log('Create game Error: ', err);

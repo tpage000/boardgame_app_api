@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Game = require('../models/game');
 const exampleGames = require('../data/exampleGames');
+const rp = require('request-promise');
 
 // index of user's games -- req.user set by auth middleware
 // if no req.user, send examples instead
@@ -41,26 +42,21 @@ router.get('/:id', (req, res) => {
     });
   });
 });
-    // Sending related expansion and parent games:
-    // THIS DOES NOT WORK because it finds expansion and parent games by
-    // BGG id, not by the db id of the games. Therefore expansion and parent
-    // games could belong to a different user. Find a fix when req.user
-    // is implemented.
-    //
-    // if (foundGame.isExpansion) {
-    //   Game.find({ 'gameId' : foundGame.expands[0].gameId }, 
-    //     'name id plays', (experrames) => {
-    //     foundGame.expansions = parentGames;
-    //     res.json(foundGame);
-    //   });
-    // } else {
-    //   Game.find({ 'expands.gameId': foundGame.gameId}, 
-    //     'name id plays', (err, expansions) => {
-    //     console.log('expansions: ', expansions);
-    //       foundGame.expansions = expansions;
-    //       res.json(foundGame);
-    //   });
-    // }
+
+// query an external API for game details
+router.get('/query/:id', async (req, res) => {
+  let options = {
+    uri: `https://bgg-json.azurewebsites.net/thing/${req.params.id}`,
+    json: true
+  }
+  try {
+    let gameResult = await rp(options) 
+    res.status(200).json(gameResult)
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ message: err.message })
+  }
+})
 
 // create a new game belonging to the user -- req.user comes from auth
 // middleware
@@ -80,5 +76,7 @@ router.post('/', (req, res) => {
     });
   }
 });
+
+
 
 module.exports = router;

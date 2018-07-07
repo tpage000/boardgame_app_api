@@ -16,7 +16,8 @@
     "jsonwebtoken": "^7.4.1",
     "mongoose": "^4.5.7",
     "morgan": "^1.8.0",
-    "request": "^2.74.0"
+    "request": "^2.74.0",
+    "request-promise": "^4.2.2"
   },
   "engines": {
     "node": "8.5.0"

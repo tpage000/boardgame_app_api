@@ -29,12 +29,21 @@ router.get('/', (req, res) => {
 router.get('/search', async (req, res) => {
   let title = req.query.title;
   let options = {
-    uri: `https://boardgamegeek.com/xmlapi2/search?query=${title}`
+    uri: `https://boardgamegeek.com/xmlapi2/search?query=${title}&type=boardgame`
   }
   try {
     let searchResult = await rp(options);
     parseXML(searchResult, (err, json) => {
-      res.status(200).json(json);
+      if (err) res.status(400).json({ err: err.message })
+      let constructedResult = json.items.item.map(item => {
+        let newItem = {
+          name: item.name[0].$.value,
+          id: item.$.id,
+          year: item.yearpublished[0].$.value
+        }
+        return newItem;
+      })
+      res.status(200).json(constructedResult);
     })
   } catch (err) {
     console.log(err);

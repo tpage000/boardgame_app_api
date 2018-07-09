@@ -26,6 +26,7 @@ router.get('/', (req, res) => {
   }
 });
 
+// search external API for a set of matching title results
 router.get('/search', async (req, res) => {
   let title = req.query.title;
   let options = {
@@ -70,7 +71,7 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// query an external API for game details
+// query an external API for extended details of a single game
 router.get('/query/:id', async (req, res) => {
   let options = {
     uri: `https://bgg-json.azurewebsites.net/thing/${req.params.id}`,
@@ -99,7 +100,7 @@ router.post('/', (req, res) => {
         res.status(400).send({ message: err.message });
       } else {
         console.log('game successfully added to database for user: ', req.user.username);
-        res.json({ status: 201, game: newGame });
+        res.status(200).json(newGame);
       }
     });
   }

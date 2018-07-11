@@ -20,7 +20,8 @@ router.get('/', (req, res) => {
         res.status(400).send({ message: err.message });
       } else {
         const reversedGames = foundGames.slice().reverse();
-        res.json(reversedGames);
+        res.status(200).json(reversedGames);
+        // res.status(200).json(foundGames);
       }
     })
   }
@@ -34,13 +35,22 @@ router.get('/search', async (req, res) => {
   }
   try {
     let searchResult = await rp(options);
+    console.log(searchResult)
     parseXML(searchResult, (err, json) => {
       if (err) res.status(400).json({ err: err.message })
       let constructedResult = json.items.item.map(item => {
+        let year = null;
+        if (item.yearpublished) {
+          if (item.yearpublished[0]) {
+            year = item.yearpublished[0]
+          } else {
+            year = item.yearpublished;
+          }
+        }
         let newItem = {
           name: item.name[0].$.value,
           id: item.$.id,
-          year: item.yearpublished[0].$.value
+          year
         }
         return newItem;
       })
@@ -48,7 +58,7 @@ router.get('/search', async (req, res) => {
     })
   } catch (err) {
     console.log(err);
-    res.send(err);
+    res.status(400).send(err);
   }
 });
 

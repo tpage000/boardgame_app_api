@@ -21,6 +21,7 @@ const guestsController = require('./controllers/guestsController');
 const gamesController = require('./controllers/gamesController');
 const gameSessionsController = require('./controllers/gameSessionsController');
 const usersController = require('./controllers/usersController');
+const friendsController = require('./controllers/friendsController');
 
 // MIDDLEWARE
 app.use(morgan('dev'));
@@ -54,6 +55,7 @@ app.use('/users', usersController);
 app.use('/games', authUser, gamesController);
 app.use('/sessions', authUser, gameSessionsController);
 app.use('/guests', authUser, guestsController);
+app.use('/friends', authUser, friendsController);
 
 // Root API route
 app.get('/', (req, res) => {

@@ -5,7 +5,8 @@ const userSchema = mongoose.Schema({
   username: { type: String, unique: true, required: true },
   email: { type: String, required: true },
   avatar: { type: String, default: "https://ikhazy.com/wp-content/uploads/2015/12/Natural-Black-Ocean-Wave-Texture-100x100.jpg" },
-  password: { type: String, required: true }
+  password: { type: String, required: true },
+  friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 }, { timestamps: true });
 
 // =================================================================

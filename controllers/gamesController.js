@@ -39,21 +39,19 @@ router.get('/search', async (req, res) => {
     parseXML(searchResult, (err, json) => {
       if (err) res.status(400).json({ err: err.message })
       let constructedResult = json.items.item.map(item => {
-        let year = null;
+        let yearPublished = null;
         if (item.yearpublished) {
-          if (item.yearpublished[0]) {
-            year = item.yearpublished[0]
-          } else {
-            year = item.yearpublished;
-          }
+          yearPublished = item.yearpublished[0].$.value
         }
         let newItem = {
           name: item.name[0].$.value,
           id: item.$.id,
-          year
+          yearPublished
         }
+
         return newItem;
       })
+      console.log(constructedResult);
       res.status(200).json(constructedResult);
     })
   } catch (err) {

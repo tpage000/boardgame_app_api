@@ -3,18 +3,11 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-// index of users (without email, password, etc)
+// index of users for dev 
 router.get('/', (req, res) => {
   User.find((err, users) => {
-    let mappedUsers = users.map(user => {
-      return {
-        username: user.username,
-        _id: user._id,
-        avatar: user.avatar
-      }
-    });
     if (err) throw err;
-    res.json(mappedUsers);
+    res.json(users);
   });
 });
 

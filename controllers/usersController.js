@@ -24,12 +24,13 @@ router.post('/login', (req, res) => {
       } else if (foundUser.authenticate(req.body.password)) {
         const token = jwt.sign({
             id: foundUser.id, 
-            username: foundUser.username
+            username: foundUser.username,
           },
           process.env.JWT_SECRET,
           { expiresIn: '7d' }
         )
-        res.json({ status: 200, username: foundUser.username, token: token });
+        let { username, avatar, _id } = foundUser;
+        res.status(200).json({ username, id: _id, avatar, token });
       } else {
         console.log('Authentication error: password does not match');
         res.status(401).send({ message: 'password does not match' })
@@ -56,6 +57,23 @@ router.post('/', (req, res) => {
       res.json({ status: 201, username: createdUser.username, token: token })
     }
   });
+});
+
+// updated user -- unprotected route
+router.put('/:id', async (req, res) => {
+  console.log('BODY DATA: ', req.body);
+  try {
+    let updatedUser = await User.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true });
+    res.status(200).json(updatedUser); 
+  } catch(err) {
+    console.log(err);
+    res.status(400).send({ message: err.message })
+  }
+});
+
+// invalidate token
+router.delete('/invalidate', async (req, res) => {
+      
 });
 
 module.exports = router;

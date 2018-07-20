@@ -3,6 +3,8 @@ const router = express.Router();
 // const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Guest = require('../models/guest');
+const Game = require('../models/game');
+const Session = require('../models/session');
 
 // Just the friends
 router.get('/', (req, res) => {
@@ -53,6 +55,7 @@ router.get('/self', (req, res) => {
   }
 });
 
+// all the friends and guests and oneself
 router.get('/allplayers', (req, res) => {
   if (!req.user) {
     res.status(401).send({ message: 'Unauthorized' })
@@ -102,6 +105,30 @@ router.post('/', (req, res) => {
     });
   }
 });
+
+router.get('/:id', async (req, res) => {
+  if (!req.user) {
+    res.status(401).json({ message: 'Unauthorized' })
+  } else {
+    let user = await User.findById(req.user.id);
+    let friend = await User.findById(req.params.id);
+    console.log(`the friend is ${friend.username} ${friend._id}`)
+
+    let foundFriend = user.friends.find(foundFriend => parseInt(foundFriend) == parseInt(friend._id));
+
+    if (foundFriend) {
+      console.log(`USER ${foundFriend.username} IS A FRIEND OF THE LOGGED-IN USER`)
+
+      let games = await Game.find({ user_id: friend._id })
+      let sessions = await Session.find({ user_id: friend._id })
+      res.send({ friend, games, sessions });
+
+    } else {
+      console.log('NOT A FRIEND OF THE LOGGED IN USER')
+      res.status(401).json({ message: 'Not a friend' })
+    }
+  }
+})
 
 module.exports = router;
 

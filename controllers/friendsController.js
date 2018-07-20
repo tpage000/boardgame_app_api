@@ -121,6 +121,8 @@ router.get('/:id', async (req, res) => {
 
       let games = await Game.find({ user_id: friend._id })
       let sessions = await Session.find({ user_id: friend._id })
+      const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'username avatar'}]
+      await Session.populate(sessions, opts)
       res.send({ friend, games, sessions });
 
     } else {

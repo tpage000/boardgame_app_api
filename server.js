@@ -61,7 +61,10 @@ app.use('/stats', authUser, statsController);
 
 // Root API route
 app.get('/', (req, res) => {
-  res.send({ message: 'Board game app API' });
+  res.send({ 
+    message: 'Board game app API',
+    documentation: 'https://github.com/tpage000/boardgame_app_api'
+  });
 });
 
 // LISTENER

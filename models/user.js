@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt-nodejs');
 const userSchema = mongoose.Schema({
   username: { type: String, unique: true, required: true },
   email: { type: String, required: true },
-  avatar: { type: String, default: "http://www.oceaniaexpeditions.com.au/wp-content/uploads/2017/04/aqua-ocean-100x100.jpe" },
+  avatar: { type: String, default: "/assets/avatars/ocean.jpeg" },
   password: { type: String, required: true },
   kind: { type: String, default: 'User' },
   friends: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]

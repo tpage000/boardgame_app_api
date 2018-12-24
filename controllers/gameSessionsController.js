@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
 });
 
 // Get game sessions for a game
-router.get('/:game_id', (req, res) => {
+router.get('/byGame/:game_id', (req, res) => {
   if (!req.user) {
     res.json([]);
   } else {
@@ -35,6 +35,19 @@ router.get('/:game_id', (req, res) => {
         res.json(gameSessions);
       });
     });
+  }
+});
+
+// Get particular session
+router.get('/:id', async(req, res) => {
+  try {
+    const session = await Session.findById(req.params.id);
+    const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'username avatar'}]
+    const populatedSession = await Session.populate(session, opts);
+    res.status(200).json(populatedSession);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json({ message: err.message })
   }
 });
 

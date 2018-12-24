@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Game = require('../models/game');
+const Session = require('../models/session');
 const exampleGames = require('../data/exampleGames');
 const rp = require('request-promise');
 const parseXML = require('xml2js').parseString;

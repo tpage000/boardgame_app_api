@@ -17,11 +17,11 @@ mongoose.connection.on('open', () => console.log('Mongo at: ', mongoURI));
 mongoose.connection.on('error', (err) => console.log('DB err: ', err.message));
 
 // CONTROLLERS
-const guestsController = require('./controllers/guestsController');
 const gamesController = require('./controllers/gamesController');
-const gameSessionsController = require('./controllers/gameSessionsController');
+const sessionsController = require('./controllers/sessionsController');
 const usersController = require('./controllers/usersController');
 const friendsController = require('./controllers/friendsController');
+const guestsController = require('./controllers/guestsController');
 const statsController = require('./controllers/statsController');
 
 // MIDDLEWARE
@@ -54,7 +54,7 @@ const authUser = (req, res, next) => {
 // Controllers as middleware -- protected routes use authUser
 app.use('/users', usersController);
 app.use('/games', authUser, gamesController);
-app.use('/sessions', authUser, gameSessionsController);
+app.use('/sessions', authUser, sessionsController);
 app.use('/guests', authUser, guestsController);
 app.use('/friends', authUser, friendsController);
 app.use('/stats', authUser, statsController);

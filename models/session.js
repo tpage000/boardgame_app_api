@@ -25,7 +25,8 @@ const sessionSchema = mongoose.Schema({
   ],
   user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   comments: String,
-  images: [{ description: String, url: String }]
+  images: [{ caption: String, url: String }],
+  location: String
 }, { timestamps: true });
 
 // validation for the presence of a gameresults array

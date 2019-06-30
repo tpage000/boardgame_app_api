@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-// const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const Guest = require('../models/guest');
 const Game = require('../models/game');
 const Session = require('../models/session');
 
 // Just the friends
+// TODO refactor async await
 router.get('/', (req, res) => {
   if (!req.user) {
     res.status(401).send({ message: 'Unauthorized' });
@@ -25,7 +25,8 @@ router.get('/', (req, res) => {
 });
 
 // potential friends excluding oneself  - id, username
-// todo - exclude: existing friends
+// TODO - exclude: existing friends
+// TODO refactor async await
 router.get('/pool', (req, res) => {
   if (!req.user) {
     res.status(401).send({ message: 'Unauthorized' });
@@ -44,6 +45,7 @@ router.get('/pool', (req, res) => {
   }
 });
 
+// TODO refactor async await
 router.get('/self', (req, res) => {
   if (!req.user) {
     res.status(401).send({ message: 'Unauthorized' });
@@ -56,7 +58,8 @@ router.get('/self', (req, res) => {
 });
 
 // all the friends and guests and oneself
-router.get('/allplayers', (req, res) => {
+// TODO refactor async await
+router.get('/allrelated', (req, res) => {
   if (!req.user) {
     res.status(401).send({ message: 'Unauthorized' })
   } else {
@@ -69,15 +72,12 @@ router.get('/allplayers', (req, res) => {
         } else {
           Guest.find({ host_user_id: foundUser._id }, (err, guests) => {
             if (err) throw err;
-
             let allPlayers = [];
             let { id, username, avatar, kind } = foundUser;
             let self = { id, username, avatar, kind };
             allPlayers.push(self);
             foundUser.friends.forEach(({ id, username, avatar, kind }) => allPlayers.push({ id, username, avatar, kind }));
             guests.forEach(({ id, username, avatar, kind }) => allPlayers.push({ id, username, avatar, kind }));
-            console.log(allPlayers);            
-
             res.status(200).json(allPlayers);
           })
         }
@@ -85,6 +85,7 @@ router.get('/allplayers', (req, res) => {
   }
 })
 
+// TODO refactor async await
 router.post('/', (req, res) => {
   console.log('Incoming friend:', req.body)
   if (!req.user) {
@@ -113,18 +114,14 @@ router.get('/:id', async (req, res) => {
     let user = await User.findById(req.user.id);
     let friend = await User.findById(req.params.id);
     console.log(`the friend is ${friend.username} ${friend._id}`)
-
     let foundFriend = user.friends.find(foundFriend => parseInt(foundFriend) == parseInt(friend._id));
-
     if (foundFriend) {
       console.log(`USER ${foundFriend.username} IS A FRIEND OF THE LOGGED-IN USER`)
-
       let games = await Game.find({ user_id: friend._id })
       let sessions = await Session.find({ user_id: friend._id })
       const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'username avatar'}]
       await Session.populate(sessions, opts)
       res.send({ friend, games, sessions });
-
     } else {
       console.log('NOT A FRIEND OF THE LOGGED IN USER')
       res.status(401).json({ message: 'Not a friend' })

@@ -8,7 +8,6 @@ const exampleSessions = require('../data/exampleSessions');
 // Get all users' sessions -- req.user comes in through auth middleware
 router.get('/', (req, res) => {
   if (!req.user) {
-    console.log('sending example sessions ..');
     res.json(exampleSessions);
   } else {
     Session.find({ user_id: req.user.id }, null, {sort: '-date'}, (err, sessions) => {
@@ -22,7 +21,7 @@ router.get('/', (req, res) => {
   }
 });
 
-// Get game sessions for a game
+// Get all sessions for a particular game
 router.get('/byGame/:game_id', (req, res) => {
   if (!req.user) {
     res.json([]);
@@ -38,7 +37,7 @@ router.get('/byGame/:game_id', (req, res) => {
   }
 });
 
-// Get particular session
+// Get a particular session
 router.get('/:id', async (req, res) => {
   try {
     const session = await Session.findById(req.params.id);
@@ -46,7 +45,7 @@ router.get('/:id', async (req, res) => {
     const populatedSession = await Session.populate(session, opts);
     res.status(200).json(populatedSession);
   } catch (err) {
-    console.log(err);
+    console.log(err)
     res.status(400).json({ message: err.message })
   }
 });
@@ -59,22 +58,19 @@ router.post('/', (req, res) => {
     req.body.user_id = req.user.id;
     Session.create(req.body, (err, newSession) => {
       if (err) {
-        console.log('Error creating session: ', err);
+        console.log(err);
         res.status(400).send({ message: err.message });
       } else {
         const opts = [{ path: 'game', select: 'name thumbnail'}, { path: 'gameresults.player.info', select: 'username avatar'}]
         const promise = Session.populate(newSession, opts)
         promise.then((gameSessions) => {
-          // res.json(gameSessions);
-          // update game plays field ( used mostly for populating game show page
+          // update game plays field 
           Game.findById(req.body.game, (findGameErr, foundGame) => {
             foundGame.plays++;
             foundGame.save((saveGameErr, savedGame) => {
-              console.log('plays incremented for game: ', foundGame.name);
               res.json(gameSessions);
             });
           });
-
         });
       };
     });

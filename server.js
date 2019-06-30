@@ -1,3 +1,5 @@
+'use strict'
+
 // DEPENDENCIES
 const express    = require('express');
 const mongoose   = require('mongoose');
@@ -7,7 +9,7 @@ const cors       = require('cors');
 
 // CONFIG
 const app = express();
-const port = process.env.PORT || 2080;
+const PORT = process.env.PORT || 2080;
 const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost/boardgame_app_api'
 require('dotenv').config();
 
@@ -17,6 +19,7 @@ mongoose.connection.on('open', () => console.log('Mongo at: ', mongoURI));
 mongoose.connection.on('error', (err) => console.log('DB err: ', err.message));
 
 // CONTROLLERS
+const authController = require('./controllers/authController');
 const gamesController = require('./controllers/gamesController');
 const sessionsController = require('./controllers/sessionsController');
 const usersController = require('./controllers/usersController');
@@ -25,39 +28,20 @@ const guestsController = require('./controllers/guestsController');
 const statsController = require('./controllers/statsController');
 
 // MIDDLEWARE
-app.use(morgan('dev'));
+if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-// Auth middleware
-const authUser = (req, res, next) => {
-  console.log('Running auth middleware...');
-  const token = req.headers['x-access-token']
-  if (!token) {
-    console.log('no auth token, no user set in req.user')
-    return next();
-  } else {
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
-      if (err) {
-        console.log('failed to authenticate, no user set in req.user')
-        return next();
-      } else {
-        console.log('decoded token: ', decodedToken);
-        req.user = decodedToken;
-        next();
-      }
-    });
-  }
-}
+const authorize = require('./middleware/authorization')
 
 // Controllers as middleware -- protected routes use authUser
-app.use('/users', usersController);
-app.use('/games', authUser, gamesController);
-app.use('/sessions', authUser, sessionsController);
-app.use('/guests', authUser, guestsController);
-app.use('/friends', authUser, friendsController);
-app.use('/stats', authUser, statsController);
+app.use('/auth', authController);
+app.use('/users', authorize, usersController);
+app.use('/games', authorize, gamesController);
+app.use('/sessions', authorize, sessionsController);
+app.use('/guests', authorize, guestsController);
+app.use('/friends', authorize, friendsController);
+app.use('/stats', authorize, statsController);
 
 // Root API route
 app.get('/', (req, res) => {
@@ -67,8 +51,8 @@ app.get('/', (req, res) => {
   });
 });
 
+app.get('*', (req, res) => res.status(400).send({ message: '404 Not Found' }));
+
 // LISTENER
-app.listen(port, () => {
-  console.log('Boardgame API is running on port: ' + port);
-});
+app.listen(PORT, () => console.log(`Boardgame API is running on port: ${PORT}`));
 

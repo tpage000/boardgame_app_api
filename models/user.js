@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt-nodejs');
 
 const userSchema = mongoose.Schema({
   username: { type: String, unique: true, required: true },
-  email: { type: String, required: true },
+  email: { type: String, unique: true, required: true },
   avatar: { type: String, default: "/assets/avatars/ocean.jpeg" },
   password: { type: String, required: true },
   kind: { type: String, default: 'User' },
@@ -12,10 +12,6 @@ const userSchema = mongoose.Schema({
 
 // =================================================================
 // PASSWORD HASHING AND AUTHENTICATION
-
-// Before each save of the user, check if the password has been added or modified,
-// and if it has, hash the provided password and store it.
-// Used at signup / creating a user.
 userSchema.pre('save', function(next) {
   if (!this.isModified('password')) { return next(); }
   const hashedPassword = bcrypt.hashSync(this.password, bcrypt.genSaltSync(10));
@@ -23,7 +19,6 @@ userSchema.pre('save', function(next) {
   next();
 });
 
-// Method for comparing the provided password with the stored hashed password.
 // Used at login / authenticating a user.
 userSchema.methods.authenticate = function(password) {
   return bcrypt.compareSync(password, this.password);

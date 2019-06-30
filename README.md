@@ -1,10 +1,10 @@
 # Boardgame tracker app API
 
-###[API on Heroku](https://botch-app-api.herokuapp.com/)
 
-**[React client](https://github.com/singular000/boardgame_app_react_client)**
 
-**[Angular client on Heroku using older version of API](https://botch-app.herokuapp.com/)**
+**[Angular client consuming API](https://botch2.herokuapp.com/)**
+
+**[API on Heroku](https://botch-app-api.herokuapp.com/)**
 
 ---
 
@@ -26,56 +26,59 @@ To use locally:
 
 **ENDPOINTS**
 
-GET
+AUTH
 
-* **`/games`** See all boardgames you've added to your collection. If not authenticated, returns example data.
-* **`/games/:id`** See just one one your boardgames, with more detail including the game's sessions. Get the `:id` from `/games`.
-* **`/sessions`** See all the boardgame sessions you've had, with times, scores, comments, etc. If not authenticated, returns example data.
-* **`/sessions/:game_id`** See just the boardgame sessions for a particular game. Get the `:game_id` from `/games`. 
-* **`/players`** See all the people with whom you play these boardgames. If not authenticated, returns example data.
+* **`POST /auth/login`** to log back and receive a JSON Web Token in the response. Body data: `username` and `password`.
+* **`POST /auth/register`** to register and receive a JSON Web Token in the response. Body data: `username` and `password`.
 
-<br>
-
-POST
-
-Authenticate
-
-* **`/users`** to register and receive a JSON Web Token in the response. Body data: `username` and `password`.
-* **`/users/login`** to log back in and receive a JSON Web Token in the response. Body data: `username` and `password`.
-
-All subsequent requests to base routes other than **`/users`** should have an **`x-access-token`** header with the value of the JSON Web Token.
+All subsequent requests to base routes other than **`/auth`** should have an **`x-access-token`** header with the value of the JSON Web Token.
 
 Token expires in 7 days.
 
 <br>
 
-POST
+GAMES
 
-Add stuff to your account
+* **`GET /games`** See all boardgames you've added to your collection.
+* **`GET /games/:id`** See just one one your boardgames, with more detail including the game's sessions.
+* **`POST /games`** add a game
+	* JSON boardgame data can found at **`'https://bgg-json.azurewebsites.net/thing/'` + BoardGameGeek game id**. Use it to populate the new game request. A frontend client can query the JSON api then just swoop that stuff into the request.
 
-* **`/games`** add a game (lotsa body data to provide...)
-* JSON boardgame data can found at **`'https://bgg-json.azurewebsites.net/thing/'` + BoardGameGeek game id**. Use it to populate the new game request. A frontend client can query the JSON api then just swoop that stuff into the request.
-* **`/sessions`** add a game session. Body data: 
+<br>
+
+SESSIONS
+
+* **`GET /sessions`** See all the boardgame sessions you've had, with times, scores, comments, etc.
+* **`GET /sessions/:game_id`** See just the boardgame sessions for a particular game. 
+* **`POST /sessions`** add a game session. Body data: 
   * **`date`** _required_
   * **`game`** with the id of the game in your collection. _required_
   * **`comments`** _optional_
   * **`gameresults`** is an array of objects. _required_. Each object contains:
-    * **`player`** with the id of the player. _required_ 
-    * **`score`**, a number. _required_
-* **`/players`** add a player. Body data: 
-  * **`name`** _required_
-  * **`avatar`** an img url (img ideally 100x100px). _optional_. A default avatar is provided
-  * **`date`**, a date when the player joined. 
+		* **`player`** with the id of the player. _required_ 
+    	* **`score`**, a number. _required_
+
+USERS
+
+* tbd
+
+FRIENDS
+
+* tbd
+
+GUESTS
+
+* tbd
+
+STATS
+
+* tbd
+
 
 ---
 
-To do:
 
-Refactor queries to `async / await`
+SERVER: Node
 
----
-
-SERVER: Node & Express
-
-DB: Mongo & Mongoose
+DB: Mongo
 

@@ -6,6 +6,7 @@ const mongoose   = require('mongoose');
 const jwt        = require('jsonwebtoken');
 const morgan     = require('morgan');
 const cors       = require('cors');
+const helmet     = require('helmet');
 
 // CONFIG
 const app = express();
@@ -16,7 +17,14 @@ require('dotenv').config();
 // DB
 mongoose.connect(mongoURI, { useNewUrlParser: true });
 mongoose.connection.on('open', () => console.log('Mongo at: ', mongoURI));
+mongoose.connection.on('disconnected', () => console.log('Mongoose default connection disconnected'))
 mongoose.connection.on('error', (err) => console.log('DB err: ', err.message));
+process.on('SIGINT', () => {
+  mongoose.connection.close(() => {
+    console.log('Mongoose default connection disconnected through app termination')
+    process.exit(0)
+  })
+})
 
 // CONTROLLERS
 const authController = require('./controllers/authController');
@@ -28,6 +36,7 @@ const guestsController = require('./controllers/guestsController');
 const statsController = require('./controllers/statsController');
 
 // MIDDLEWARE
+app.use(helmet({ hsts: { maxAge: 15552000, includeSubDomains: true, preload: true } }));
 if (process.env.NODE_ENV !== 'production') app.use(morgan('dev'));
 app.use(cors());
 app.use(express.urlencoded({ extended: false }));
